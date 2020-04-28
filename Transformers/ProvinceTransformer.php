@@ -14,6 +14,7 @@ class ProvinceTransformer extends Resource
       'name'=> $this->when($this->name,$this->name),
       'iso2' => $this->when($this->iso_2, $this->iso_2),
       'callingCode' => $this->when($this->calling_code, $this->calling_code),
+      'countryId' => $this->when($this->country_id, $this->country_id),
       'country' => new CountryTransformer($this->whenLoaded('country')),
       'cities' => CityTransformer::collection($this->whenLoaded('cities')),
       'updatedAt' => $this->when($this->updated_at, $this->updated_at),

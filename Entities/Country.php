@@ -20,7 +20,7 @@ class Country extends Model
     'currency_code',
     'currency_sub_unit',
     'region_code',
-    'sub-region-code',
+    'sub_region_code',
     'country_code',
     'iso_2',
     'iso_3',

@@ -20,6 +20,7 @@ class CountryTransformer extends Resource
       'currencyCode'=>$this->when($this->currency_code,$this->currency_code),
       'currencySubUnit'=>$this->when($this->currency_sub_unit,$this->currency_sub_unit),
       'regionCode'=>$this->when($this->region_code,$this->region_code),
+      'subRegionCode' => $this->when($this->sub_region_code,$this->sub_region_code),
       'countryCode'=>$this->when($this->country_code,$this->country_code),
       'iso3'=>$this->when($this->iso_3,$this->iso_3),
       'callingCode'=>$this->when($this->calling_code,$this->calling_code),
