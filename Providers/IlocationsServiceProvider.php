@@ -32,7 +32,11 @@ class IlocationsServiceProvider extends ServiceProvider
             $event->load('countries', array_dot(trans('ilocations::countries')));
             $event->load('provinces', array_dot(trans('ilocations::provinces')));
             $event->load('cities', array_dot(trans('ilocations::cities')));
+            $event->load('polygons', array_dot(trans('ilocations::polygons')));
             // append translations
+
+
+
 
 
 
@@ -94,18 +98,6 @@ class IlocationsServiceProvider extends ServiceProvider
                 return new \Modules\Ilocations\Repositories\Cache\CacheGeozonesDecorator($repository);
             }
         );
-        // $this->app->bind(
-        //     'Modules\Ilocations\Repositories\GeozonesCountriesRepository',
-        //     function () {
-        //         $repository = new \Modules\Ilocations\Repositories\Eloquent\EloquentGeozonesCountriesRepository(new \Modules\Ilocations\Entities\GeozonesCountries());
-        //
-        //         if (! config('app.cache')) {
-        //             return $repository;
-        //         }
-        //
-        //         return new \Modules\Ilocations\Repositories\Cache\CacheGeozonesCountriesDecorator($repository);
-        //     }
-        // );
         $this->app->bind(
             'Modules\Ilocations\Repositories\CityRepository',
             function () {
@@ -118,7 +110,23 @@ class IlocationsServiceProvider extends ServiceProvider
                 return new \Modules\Ilocations\Repositories\Cache\CacheCityDecorator($repository);
             }
         );
+
+        $this->app->bind(
+            'Modules\Ilocations\Repositories\PolygonRepository',
+            function () {
+                $repository = new \Modules\Ilocations\Repositories\Eloquent\EloquentPolygonRepository(new \Modules\Ilocations\Entities\Polygon());
+
+                if (! config('app.cache')) {
+                    return $repository;
+                }
+
+                return new \Modules\Ilocations\Repositories\Cache\CachePolygonDecorator($repository);
+            }
+        );
 // add bindings
+
+
+
 
 
     }
