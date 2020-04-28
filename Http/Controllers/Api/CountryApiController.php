@@ -2,84 +2,123 @@
 
 namespace Modules\Ilocations\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+// Libs
 use Modules\Ihelpers\Http\Controllers\Api\BaseApiController;
-use Modules\Ilocations\Repositories\CountryRepository;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
+use Exception;
+use Log;
+use DB;
+
+// Custom Requests
+use Modules\Ilocations\Http\Requests\CreateCountryRequest;
+use Modules\Ilocations\Http\Requests\UpdateCountryRequest;
+
+// Transformers
 use Modules\Ilocations\Transformers\CountryTransformer;
+
+// Repositories
+use Modules\Ilocations\Repositories\CountryRepository;
+
 
 class CountryApiController extends BaseApiController
 {
-    /**
-     * @var Application
-     */
-    private $country;
 
-    public function __construct(
-        CountryRepository $country)
-    {
+  private $country;
 
-        $this->country = $country;
+  public function __construct(CountryRepository $country){
+    $this->country = $country;
+  }
 
+  /**
+   * @param Request $request
+   * @return mixed
+   */
+  public function index (Request $request) {
+    try {
+      $params = $this->getParamsRequest($request);
+      $countries = $this->country->getItemsBy($params);
+      $response = ['data' => CountryTransformer::collection($countries)];
+      $params->page ? $response["meta"] = ["page" => $this->pageTransformer($countries)] : false;
+      $status = 200;
+    } catch (Exception $exception) {
+      Log::Error($exception);
+      $status = $this->getStatusError($exception->getCode());
+      $response = ['errors' => $exception->getMessage()];
     }
+    return response()->json($response, $status);
+  }
 
- /**
-    * GET ITEMS
-    *
-    * @return mixed
-    */
-   public function index(Request $request)
-   {
-     try {
-       //Get Parameters from URL.
-       $params = $this->getParamsRequest($request);
+  public function show ($criteria, Request $request) {
+    try {
+      $params = $this->getParamsRequest($request);
+      $country = $this->country->getItem($criteria, $params);
+      if(!$country) throw new Exception('Item not found',404);
+      $response = ['data' => new CountryTransformer($country)];
+      $status = 200;
+    } catch (Exception $exception) {
+      Log::Error($exception);
+      $status = $this->getStatusError($exception->getCode());
+      $response = ['errors' => $exception->getMessage()];
+    }
+    return response()->json($response, $status);
+  }
 
-       //Request to Repository
-       $dataEntity = $this->country->getItemsBy($params);
+  public function create (Request $request) {
+    DB::beginTransaction();
+    try {
+      $data = $request->input('attributes') ?? [];
+      $this->validateRequestApi(new CreateCountryRequest($data));
+      $country = $this->country->create($data);
+      $response = ['data' => new CountryTransformer($country)];
+      $status = 200;
+      DB::commit();
+    } catch (Exception $exception) {
+      Log::Error($exception);
+      DB::rollback();
+      $status = $this->getStatusError($exception->getCode());
+      $response = ['errors' => $exception->getMessage()];
+    }
+    return response()->json($response, $status);
+  }
 
-       //Response
-       $response = ["data" => CountryTransformer::collection($dataEntity)];
+  public function update ($criteria, Request $request) {
+    DB::beginTransaction();
+    try {
+      $data = $request->input('attributes') ?? [];
+      $this->validateRequestApi(new UpdateCountryRequest($data));
+      $params = $this->getParamsRequest($request);
+      $country = $this->country->getItem($criteria, $params);
+      $this->country->update($country, $data);
+      $response = ['data' => new CountryTransformer($country)];
+      $status = 200;
+      DB::commit();
+    } catch (Exception $exception) {
+      Log::Error($exception);
+      DB::rollback();
+      $status = $this->getStatusError($exception->getCode());
+      $response = ['errors' => $exception->getMessage()];
+    }
+    return response()->json($response, $status);
+  }
 
-       //If request pagination add meta-page
-       $params->page ? $response["meta"] = ["page" => $this->pageTransformer($dataEntity)] : false;
-     } catch (\Exception $e) {
-       $status = $this->getStatusError($e->getCode());
-       $response = ["errors" => $e->getMessage()];
-     }
+  public function delete ($criteria, Request $request) {
+    DB::beginTransaction();
+    try {
+      $params = $this->getParamsRequest($request);
+      $country = $this->country->getItem($criteria, $params);
+      $this->country->destroy($country);
+      $response = ['data' => true];
+      $status = 200;
+      DB::commit();
+    } catch (Exception $exception) {
+      Log::Error($exception);
+      DB::rollback();
+      $status = $this->getStatusError($exception->getCode());
+      $response = ['errors' => $exception->getMessage()];
+    }
+    return response()->json($response, $status);
+  }
 
-     //Return response
-     return response()->json($response ?? ["data" => "Request successful"], $status ?? 200);
-   }
-   /**
-      * GET A ITEM
-      * 
-      * @param $criteria
-      * @return mixed
-      */
-     public function show($criteria,Request $request)
-     {
-       try {
-         //Get Parameters from URL.
-         $params = $this->getParamsRequest($request);
-   
-         //Request to Repository
-         $dataEntity = $this->country->getItem($criteria, $params);
-   
-         //Break if no found item
-         if(!$dataEntity) throw new Exception('Item not found',204);
-         
-         //Response
-         $response = ["data" => new CountryTransformer($dataEntity)];
-   
-         //If request pagination add meta-page
-         $params->page ? $response["meta"] = ["page" => $this->pageTransformer($dataEntity)] : false;
-       } catch (\Exception $e) {
-         $status = $this->getStatusError($e->getCode());
-         $response = ["errors" => $e->getMessage()];
-       }
-   
-       //Return response
-       return response()->json($response ?? ["data" => "Request successful"], $status ?? 200);
-     }
+
 }

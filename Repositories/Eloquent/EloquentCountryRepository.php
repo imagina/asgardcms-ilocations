@@ -7,7 +7,6 @@ use Modules\Core\Repositories\Eloquent\EloquentBaseRepository;
 
 class EloquentCountryRepository extends EloquentBaseRepository implements CountryRepository
 {
-  
   public function index($page, $take, $filter, $include, $fields)
   {
     
@@ -74,7 +73,6 @@ class EloquentCountryRepository extends EloquentBaseRepository implements Countr
     return $this->model->where('iso_2',$iso2)->first();
   }
 
-
   public function getItem($criteria, $params = false)
       {
         //Initialize query
@@ -106,7 +104,7 @@ class EloquentCountryRepository extends EloquentBaseRepository implements Countr
         return $query->where($field ?? 'id', $criteria)->first();
       }
 
-      public function getItemsBy($params = false)
+  public function getItemsBy($params = false)
         {
           /*== initialize query ==*/
           $query = $this->model->query();
@@ -171,5 +169,4 @@ class EloquentCountryRepository extends EloquentBaseRepository implements Countr
             return $query->get();
           }
         }
-
 }
