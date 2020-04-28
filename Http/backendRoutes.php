@@ -136,7 +136,42 @@ $router->group(['prefix' =>'/ilocations'], function (Router $router) {
         'uses' => 'CityController@destroy',
         'middleware' => 'can:ilocations.cities.destroy'
     ]);
+    $router->bind('polygon', function ($id) {
+        return app('Modules\Ilocations\Repositories\PolygonRepository')->find($id);
+    });
+    $router->get('polygons', [
+        'as' => 'admin.ilocations.polygon.index',
+        'uses' => 'PolygonController@index',
+        'middleware' => 'can:ilocations.polygons.index'
+    ]);
+    $router->get('polygons/create', [
+        'as' => 'admin.ilocations.polygon.create',
+        'uses' => 'PolygonController@create',
+        'middleware' => 'can:ilocations.polygons.create'
+    ]);
+    $router->post('polygons', [
+        'as' => 'admin.ilocations.polygon.store',
+        'uses' => 'PolygonController@store',
+        'middleware' => 'can:ilocations.polygons.create'
+    ]);
+    $router->get('polygons/{polygon}/edit', [
+        'as' => 'admin.ilocations.polygon.edit',
+        'uses' => 'PolygonController@edit',
+        'middleware' => 'can:ilocations.polygons.edit'
+    ]);
+    $router->put('polygons/{polygon}', [
+        'as' => 'admin.ilocations.polygon.update',
+        'uses' => 'PolygonController@update',
+        'middleware' => 'can:ilocations.polygons.edit'
+    ]);
+    $router->delete('polygons/{polygon}', [
+        'as' => 'admin.ilocations.polygon.destroy',
+        'uses' => 'PolygonController@destroy',
+        'middleware' => 'can:ilocations.polygons.destroy'
+    ]);
 // append
+
+
 
 
 
