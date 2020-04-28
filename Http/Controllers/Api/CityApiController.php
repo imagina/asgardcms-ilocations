@@ -2,88 +2,141 @@
 
 namespace Modules\Ilocations\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
-use Modules\Ilocations\Transformers\CityTransformer;
+// Libs
 use Modules\Ihelpers\Http\Controllers\Api\BaseApiController;
+use Illuminate\Http\Response;
+use Illuminate\Http\Request;
+use Exception;
+use Log;
+use DB;
+
+// Custom Requests
+use Modules\Ilocations\Http\Requests\CreateCityRequest;
+use Modules\Ilocations\Http\Requests\UpdateCityRequest;
+
+// Transformers
+use Modules\Ilocations\Transformers\CityTransformer;
+
+// Repositories
 use Modules\Ilocations\Repositories\CityRepository;
+
 
 class CityApiController extends BaseApiController
 {
-  /**
-   * @var Application
-   */
+
   private $city;
   
-  public function __construct(
-    CityRepository $city)
-  {
-    
+  public function __construct(CityRepository $city){
     $this->city = $city;
-    
   }
 
-  
   /**
-     * GET ITEMS
-     * 
-     * @return mixed
-     */
-    public function index(Request $request)
-    {
-      try {
-        //Get Parameters from URL.
-        $params = $this->getParamsRequest($request);
-  
-        //Request to Repository
-        $dataEntity = $this->city->getItemsBy($params);
-  
-        //Response
-        $response = ["data" => CityTransformer::collection($dataEntity)];
-  
-        //If request pagination add meta-page
-        $params->page ? $response["meta"] = ["page" => $this->pageTransformer($dataEntity)] : false;
-      } catch (\Exception $e) {
-        $status = $this->getStatusError($e->getCode());
-        $response = ["errors" => $e->getMessage()];
-      }
-  
-      //Return response
-      return response()->json($response ?? ["data" => "Request successful"], $status ?? 200);
+   * @param Request $request
+   * @return mixed
+   */
+  public function index (Request $request) {
+    try {
+      $params = $this->getParamsRequest($request);
+      $cities = $this->city->getItemsBy($params);
+      $response = ['data' => CityTransformer::collection($cities)];
+      $params->page ? $response["meta"] = ["page" => $this->pageTransformer($cities)] : false;
+      $status = 200;
+    } catch (Exception $exception) {
+      Log::Error($exception);
+      $status = $this->getStatusError($exception->getCode());
+      $response = ['errors' => $exception->getMessage()];
     }
-    
-    /**
-       * GET A ITEM
-       * 
-       * @param $criteria
-       * @return mixed
-       */
-      public function show($criteria,Request $request)
-      {
-        try {
-          //Get Parameters from URL.
-          $params = $this->getParamsRequest($request);
-    
-          //Request to Repository
-          $dataEntity = $this->city->getItem($criteria, $params);
-    
-          //Break if no found item
-          if(!$dataEntity) throw new Exception('Item not found',204);
-          
-          //Response
-          $response = ["data" => new CityTransformer($dataEntity)];
-    
-          //If request pagination add meta-page
-          $params->page ? $response["meta"] = ["page" => $this->pageTransformer($dataEntity)] : false;
-        } catch (\Exception $e) {
-          $status = $this->getStatusError($e->getCode());
-          $response = ["errors" => $e->getMessage()];
-        }
-    
-        //Return response
-        return response()->json($response ?? ["data" => "Request successful"], $status ?? 200);
-      }
-  
+    return response()->json($response, $status);
+  }
+
+  /**
+   * @param $criteria
+   * @param Request $request
+   * @return mixed
+   */
+  public function show ($criteria, Request $request) {
+    try {
+      $params = $this->getParamsRequest($request);
+      $city = $this->city->getItem($criteria, $params);
+      if(!$city) throw new Exception('Item not found',404);
+      $response = ['data' => new CityTransformer($city)];
+      $status = 200;
+    } catch (Exception $exception) {
+      Log::Error($exception);
+      $status = $this->getStatusError($exception->getCode());
+      $response = ['errors' => $exception->getMessage()];
+    }
+    return response()->json($response, $status);
+  }
+
+  /**
+   * @param Request $request
+   * @return mixed
+   */
+  public function create (Request $request) {
+    DB::beginTransaction();
+    try {
+      $data = $request->input('attributes') ?? [];
+      $this->validateRequestApi(new CreateCityRequest($data));
+      $city = $this->city->create($data);
+      $response = ['data' => new CityTransformer($city)];
+      $status = 200;
+      DB::commit();
+    } catch (Exception $exception) {
+      Log::Error($exception);
+      DB::rollback();
+      $status = $this->getStatusError($exception->getCode());
+      $response = ['errors' => $exception->getMessage()];
+    }
+    return response()->json($response, $status);
+  }
+
+  /**
+   * @param $criteria
+   * @param Request $request
+   * @return mixed
+   */
+  public function update ($criteria, Request $request) {
+    DB::beginTransaction();
+    try {
+      $data = $request->input('attributes') ?? [];
+      $this->validateRequestApi(new UpdateCityRequest($data));
+      $params = $this->getParamsRequest($request);
+      $city = $this->city->getItem($criteria, $params);
+      $this->city->update($city, $data);
+      $response = ['data' => new CityTransformer($city)];
+      $status = 200;
+      DB::commit();
+    } catch (Exception $exception) {
+      Log::Error($exception);
+      DB::rollback();
+      $status = $this->getStatusError($exception->getCode());
+      $response = ['errors' => $exception->getMessage()];
+    }
+    return response()->json($response, $status);
+  }
+
+  /**
+   * @param $criteria
+   * @param Request $request
+   * @return mixed
+   */
+  public function delete ($criteria, Request $request) {
+    DB::beginTransaction();
+    try {
+      $params = $this->getParamsRequest($request);
+      $city = $this->city->getItem($criteria, $params);
+      $this->city->destroy($city);
+      $response = ['data' => true];
+      $status = 200;
+      DB::commit();
+    } catch (Exception $exception) {
+      Log::Error($exception);
+      DB::rollback();
+      $status = $this->getStatusError($exception->getCode());
+      $response = ['errors' => $exception->getMessage()];
+    }
+    return response()->json($response, $status);
+  }
   
 }

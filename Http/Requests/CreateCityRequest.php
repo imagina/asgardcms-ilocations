@@ -8,12 +8,19 @@ class CreateCityRequest extends BaseFormRequest
 {
     public function rules()
     {
-        return [];
+        return [
+          'name' => 'required',
+          'code' => 'required',
+          'province_id' => 'required',
+          'country_id' => 'required',
+        ];
     }
 
     public function translationRules()
     {
-        return [];
+        return [
+
+        ];
     }
 
     public function authorize()

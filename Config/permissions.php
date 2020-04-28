@@ -37,7 +37,16 @@ return [
         'edit' => 'ilocations::cities.edit resource',
         'destroy' => 'ilocations::cities.destroy resource',
     ],
+    'ilocations.polygons' => [
+        'index' => 'ilocations::polygons.list resource',
+        'create' => 'ilocations::polygons.create resource',
+        'edit' => 'ilocations::polygons.edit resource',
+        'destroy' => 'ilocations::polygons.destroy resource',
+    ],
 // append
+
+
+
 
 
 
