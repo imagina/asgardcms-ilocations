@@ -9,9 +9,9 @@ $router->group(['prefix' => '/v2/ilocations'], function (Router $router) {
   require('ApiRoutes/CountryRoutes.php');
   require('ApiRoutes/ProvinceRoutes.php');
   require('ApiRoutes/PolygonRoutes.php');
+  require ('ApiRoutes/GeozoneRoutes.php');
 
 });
-
 
 
 $router->group(['prefix' => '/ilocations'], function (Router $router) {
