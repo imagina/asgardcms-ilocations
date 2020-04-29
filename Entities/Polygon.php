@@ -20,4 +20,9 @@ class Polygon extends Model
       'points',
       'options',
     ];
+
+  public function geozones()
+  {
+    return $this->morphToMany(Geozones::class, 'geozonable');
+  }
 }
