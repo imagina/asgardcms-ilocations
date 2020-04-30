@@ -34,4 +34,9 @@ class Geozones extends Model
     return $this->morphedByMany(Polygon::Class, 'geozonable', 'ilocations__geozonables', 'geozone_id');
   }
 
+  public function neighborhoods()
+  {
+    return $this->morphedByMany(Neighborhood::Class, 'geozonable', 'ilocations__geozonables', 'geozone_id');
+  }
+
 }

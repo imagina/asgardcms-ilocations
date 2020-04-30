@@ -119,6 +119,10 @@ class EloquentGeozonesRepository extends EloquentBaseRepository implements Geozo
       if (isset($data['polygons'])){
         $geozone->polygons()->sync(array_get($data, 'polygons', []));
       }
+
+      if (isset($data['neighborhoods'])){
+        $geozone->neighborhoods()->sync(array_get($data, 'neighborhoods', []));
+      }
     }
 
     return $geozone;
@@ -145,6 +149,10 @@ class EloquentGeozonesRepository extends EloquentBaseRepository implements Geozo
 
       if (isset($data['polygons'])){
         $geozone->polygons()->sync(array_get($data, 'polygons', []));
+      }
+
+      if (isset($data['neighborhoods'])){
+        $geozone->neighborhoods()->sync(array_get($data, 'neighborhoods', []));
       }
     }
 

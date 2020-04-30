@@ -19,6 +19,7 @@ class GeozoneTransformer extends Resource
       'cities' => CityTransformer::collection($this->whenLoaded('cities')),
       'provinces' => ProvinceTransformer::collection($this->whenLoaded('provinces')),
       'polygons' => PolygonTransformer::collection($this->whenLoaded('polygons')),
+      'neighborhoods' => PolygonTransformer::collection($this->whenLoaded('neighborhoods')),
     ];
 
     return $data;
