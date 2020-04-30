@@ -123,6 +123,18 @@ class IlocationsServiceProvider extends ServiceProvider
                 return new \Modules\Ilocations\Repositories\Cache\CachePolygonDecorator($repository);
             }
         );
+      $this->app->bind(
+        'Modules\Ilocations\Repositories\NeighborhoodRepository',
+        function () {
+          $repository = new \Modules\Ilocations\Repositories\Eloquent\EloquentNeighborhoodRepository(new \Modules\Ilocations\Entities\Neighborhood());
+
+          if (! config('app.cache')) {
+            return $repository;
+          }
+
+          return new \Modules\Ilocations\Repositories\Cache\CacheNeighborhoodDecorator($repository);
+        }
+      );
 // add bindings
 
 
