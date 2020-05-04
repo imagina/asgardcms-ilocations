@@ -1,5 +1,8 @@
 url: https://github.com/imagina/asgardcms-ilocations
 versions:
+      "1.0.3":
+        changed:
+          - Add cast attributes in polygon entity
       "1.0.2":
         added:
           - Permissions for neighborhoods
