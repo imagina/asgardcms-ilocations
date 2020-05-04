@@ -9,10 +9,7 @@ class CreatePolygonRequest extends BaseFormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'description' => 'required',
-            'points' => 'required',
-            'options' => 'required',
+
         ];
     }
 

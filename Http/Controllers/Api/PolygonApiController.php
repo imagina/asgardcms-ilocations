@@ -65,8 +65,8 @@ class PolygonApiController extends BaseApiController
     try {
       $data = $request->input('attributes') ?? [];
       $this->validateRequestApi(new CreatePolygonRequest($data));
-      $city = $this->polygon->create($data);
-      $response = ['data' => new PolygonTransformer($city)];
+      $polygon = $this->polygon->create($data);
+      $response = ['data' => new PolygonTransformer($polygon)];
       $status = 200;
       DB::commit();
     } catch (Exception $exception) {

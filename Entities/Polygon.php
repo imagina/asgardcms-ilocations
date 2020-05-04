@@ -7,19 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Polygon extends Model
 {
-    use Translatable;
+  use Translatable;
 
-    protected $table = 'ilocations__polygons';
+  protected $table = 'ilocations__polygons';
 
-    public $translatedAttributes = [
-      'name',
-      'description'
-    ];
+  public $translatedAttributes = [
+    'name',
+    'description'
+  ];
 
-    protected $fillable = [
-      'points',
-      'options',
-    ];
+  protected $fillable = [
+    'points',
+    'options',
+  ];
+
+  protected $casts = [
+    'options' => 'array',
+    'points' => 'array',
+  ];
 
   public function geozones()
   {
