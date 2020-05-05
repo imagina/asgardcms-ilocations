@@ -1,5 +1,8 @@
 url: https://github.com/imagina/asgardcms-ilocations
 versions:
+      "1.0.4":
+        added:
+          - Add filter by address in geozone resource
       "1.0.3":
         changed:
           - Add cast attributes in polygon entity
