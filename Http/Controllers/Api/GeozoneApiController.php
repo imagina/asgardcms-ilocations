@@ -120,9 +120,4 @@ class GeozoneApiController extends BaseApiController
     return response()->json($response, $status);
   }
 
-
-
-
-
-
 }

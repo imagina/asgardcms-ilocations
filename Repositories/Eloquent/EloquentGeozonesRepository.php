@@ -33,8 +33,31 @@ class EloquentGeozonesRepository extends EloquentBaseRepository implements Geozo
 
       if (isset($filter->country))
         $query->where("country_id", $filter->country);
+
       if (isset($filter->province))
         $query->where("province_id", $filter->province);
+
+      /* Filter for address */
+      if(
+        isset($filter->address) &&
+        isset($filter->address->city) &&
+        isset($filter->address->province) &&
+        isset($filter->address->country)
+      ){
+
+        $query->whereHas('cities', function ($query) use ($filter) {
+          $query->where('ilocations__cities.id', $filter->address->city);
+        });
+
+        $query->orWhereHas('countries', function ($query) use ($filter) {
+          $query->where('ilocations__countries.id', $filter->address->country);
+        });
+
+        $query->orWhereHas('provinces', function ($query) use ($filter) {
+          $query->where('ilocations__provinces.id', $filter->address->province);
+        });
+
+      }
 
       //Filter by date
       if (isset($filter->date)) {
@@ -127,7 +150,6 @@ class EloquentGeozonesRepository extends EloquentBaseRepository implements Geozo
 
     return $geozone;
   }
-
 
   public function update($model, $data)
   {
