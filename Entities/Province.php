@@ -10,6 +10,7 @@ class Province extends Model
     use Translatable;
 
     protected $table = 'ilocations__provinces';
+
     public $translatedAttributes = [
         'name'
     ];
@@ -33,20 +34,8 @@ class Province extends Model
         return $this->hasMany(GeozonesCountries::class);
     }
 
-    public function __call($method, $parameters)
+    public function geozones()
     {
-        #i: Convert array to dot notation
-        $config = implode('.', ['asgard.ilocations.config.relations.provinces', $method]);
-
-        #i: Relation method resolver
-        if (config()->has($config)) {
-            $function = config()->get($config);
-            $bound = $function->bindTo($this);
-
-            return $bound();
-        }
-
-        #i: No relation found, return the call to parent (Eloquent) to handle it.
-        return parent::__call($method, $parameters);
+      return $this->morphToMany(Geozones::class, 'geozonable');
     }
 }

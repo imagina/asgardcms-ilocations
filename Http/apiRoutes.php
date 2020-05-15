@@ -4,40 +4,19 @@ use Illuminate\Routing\Router;
 
 
 $router->group(['prefix' => '/v2/ilocations'], function (Router $router) {
-  
-  
-  $router->group(['prefix' => '/countries'], function (Router $router) {
-    
-    $router->get('/', [
-      'as' => 'ilocation.api.get.countries',
-      'uses' => 'CountryApiController@index',
-    ]);
-    
-  });
-  
-  $router->group(['prefix' => '/provinces'], function (Router $router) {
-    
-    $router->get('/', [
-      'as' => 'ilocation.api.get.provinces',
-      'uses' => 'ProvinceApiController@index',
-    ]);
-  });
-  
-  $router->group(['prefix' => '/cities'], function (Router $router) {
-    
-    $router->get('/', [
-      'as' => 'ilocation.api.get.cities',
-      'uses' => 'CityApiController@index',
-    ]);
-    
-  });
+
+  require('ApiRoutes/CityRoutes.php');
+  require('ApiRoutes/CountryRoutes.php');
+  require('ApiRoutes/ProvinceRoutes.php');
+  require('ApiRoutes/PolygonRoutes.php');
+  require ('ApiRoutes/GeozoneRoutes.php');
+  require ('ApiRoutes/NeighborhoodRoutes.php');
+
 });
 
 
-
 $router->group(['prefix' => '/ilocations'], function (Router $router) {
-  
-  
+
   $router->get('allfullcountries', [
     'as' => 'ilocation.api.get.allfullcountries',
     'uses' => 'CountryController@allFullCountries',

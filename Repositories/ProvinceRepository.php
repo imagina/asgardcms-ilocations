@@ -8,4 +8,6 @@ interface ProvinceRepository extends BaseRepository
 {
   public function findByIso2($iso2);
   public function index($page, $take, $filter, $include, $fields);
+  public function getItemsBy($params);
+  public function getItem($criteria, $params);
 }

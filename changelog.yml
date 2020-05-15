@@ -1,5 +1,29 @@
 url: https://github.com/imagina/asgardcms-ilocations
 versions:
+      "1.0.4":
+        added:
+          - Add filter by address in geozone resource
+      "1.0.3":
+        changed:
+          - Add cast attributes in polygon entity
+      "1.0.2":
+        added:
+          - Permissions for neighborhoods
+      "1.0.1":
+        added:
+          - Neighborhoods resource
+        changed:
+          - Geozone, adding relationships with neighborhoods
+      "1.0.0":
+        added:
+          - Geozonable table for Polymorphic Relationships
+          - Polygons Entity, this is dinamic zones
+        changed:
+          - City, changed to imagina Standar API
+          - Country, changed to imagina Standar API
+          - Country, changed to imagina Standar API
+          - Geozone, changed to imagina Standar API
+          - Api routes for version 1
       "0.3.2":
         added:
           - Cache methods Country, Geozones, Provinces

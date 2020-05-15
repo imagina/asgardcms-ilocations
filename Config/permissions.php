@@ -37,7 +37,22 @@ return [
         'edit' => 'ilocations::cities.edit resource',
         'destroy' => 'ilocations::cities.destroy resource',
     ],
+    'ilocations.polygons' => [
+        'index' => 'ilocations::polygons.list resource',
+        'create' => 'ilocations::polygons.create resource',
+        'edit' => 'ilocations::polygons.edit resource',
+        'destroy' => 'ilocations::polygons.destroy resource',
+    ],
+    'ilocations.neighborhoods' => [
+      'index' => 'ilocations::neighborhoods.list resource',
+      'create' => 'ilocations::neighborhoods.create resource',
+      'edit' => 'ilocations::neighborhoods.edit resource',
+      'destroy' => 'ilocations::neighborhoods.destroy resource',
+    ],
 // append
+
+
+
 
 
 
